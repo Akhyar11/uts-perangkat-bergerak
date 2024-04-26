@@ -37,8 +37,7 @@ export default function Dashboard() {
       if (pin === "d2") newNodes.d2.condition = !nodes.d2.condition;
       if (pin === "d3") newNodes.d3.condition = !nodes.d3.condition;
 
-      const resolve = await axios.post(data.apiLink + "/" + token, newNodes);
-      console.log(resolve);
+      await axios.post(data.apiLink + "/" + token, newNodes);
       await getNodes();
     }
   };
@@ -63,9 +62,21 @@ export default function Dashboard() {
                 condition={nodes.d0.condition}
                 func={() => setPin("d0")}
               />
-              <PinOnOff label="PIN D1" condition={nodes.d1.condition} />
-              <PinOnOff label="PIN D2" condition={nodes.d2.condition} />
-              <PinOnOff label="PIN D3" condition={nodes.d3.condition} />
+              <PinOnOff
+                label="PIN D1"
+                condition={nodes.d1.condition}
+                func={() => setPin("d1")}
+              />
+              <PinOnOff
+                label="PIN D2"
+                condition={nodes.d2.condition}
+                func={() => setPin("d2")}
+              />
+              <PinOnOff
+                label="PIN D3"
+                condition={nodes.d3.condition}
+                func={() => setPin("d3")}
+              />
             </>
           ) : (
             <></>
