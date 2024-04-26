@@ -59,7 +59,7 @@ export const addNode = async (d: DataIter) => {
 
 export const updateNode = async (d: DataIter) => {
   try {
-    await db.collection("users").doc(d.id).update({
+    await db.collection("nodes").doc(d.id).update({
       d0: d.d0,
       d1: d.d1,
       d2: d.d2,
