@@ -12,7 +12,7 @@ function generateRandomID() {
   return result;
 }
 
-export async function GET() {
+export async function POST() {
   const id = generateRandomID();
   const pin: PinType = { label: "lamp", condition: false };
   const data: DataIter = { id, d0: pin, d1: pin, d2: pin, d3: pin };
