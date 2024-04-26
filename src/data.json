@@ -1,1 +1,3 @@
-[]
+{
+  "apiLink": "https://uts-perangkat-bergerak.vercel.app/api/NodeMCU"
+}
