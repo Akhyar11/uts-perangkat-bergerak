@@ -75,7 +75,7 @@ export const updateNode = async (d: DataIter) => {
 
 export const deleteNode = async (nodeID: string) => {
   try {
-    await db.collection("users").doc(nodeID).delete();
+    await db.collection("nodes").doc(nodeID).delete();
     console.log("User deleted with ID:", nodeID);
     return true;
   } catch (error) {
