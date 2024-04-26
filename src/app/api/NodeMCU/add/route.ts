@@ -1,4 +1,4 @@
-import { DataIter, PinType, createData } from "@/utils/controllerDatas";
+import { DataIter, PinType, addNode } from "@/utils/controllerDatas";
 import { NextResponse } from "next/server";
 
 function generateRandomID() {
@@ -16,9 +16,11 @@ export async function GET() {
   const id = generateRandomID();
   const pin: PinType = { label: "lamp", condition: false };
   const data: DataIter = { id, d0: pin, d1: pin, d2: pin, d3: pin };
-  const valid = createData(data);
+  const valid = await addNode(data);
   if (valid) {
-    return NextResponse.json({ msg: "berhasil membuat data" });
+    return NextResponse.json({
+      msg: "berhasil membuat data dengan id => " + id,
+    });
   } else {
     return NextResponse.json({ msg: "gagal membuat data" });
   }

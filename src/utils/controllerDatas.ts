@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { db } from "./firebase";
 
 export interface DataIter {
   id: string;
@@ -13,60 +13,73 @@ export type PinType = {
   condition: boolean;
 };
 
-export function loadData(): DataIter[] {
-  const dataJson = readFileSync("src/data.json", "utf-8");
-  const data = JSON.parse(dataJson);
-  return data;
-}
+export const getAllNode = async () => {
+  try {
+    const snapshot = await db.collection("nodes").get();
+    const usersList = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return usersList;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return false;
+  }
+};
 
-export function writeData(data: DataIter[]) {
-  const dataJson = JSON.stringify(data);
-  writeFileSync("src/data.json", dataJson);
-}
-
-export function findData(id: string) {
-  const datas = loadData();
-  const data = datas.find((data) => data.id === id);
-  if (data) return data;
-  else return false;
-}
-
-export function updateData(d: DataIter) {
-  const datas = loadData();
-  const newData = datas.map((data) => {
-    if (data.id === d.id) {
-      return d;
+export async function getNode(nodeID: string) {
+  try {
+    const doc = await db.collection("nodes").doc(nodeID).get();
+    if (doc.exists) {
+      return doc.data();
     } else {
-      return data;
+      return false;
     }
-  });
-
-  writeData(newData);
-  return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
-export function createData(d: DataIter) {
-  const datas = loadData();
-  const findData = datas.find((data) => data.id === d.id);
-  if (!findData) {
-    datas.push(d);
-    writeData(datas);
-    return true;
-  } else return false;
-}
-
-export function delateData(id: string) {
-  const datas = loadData();
-  const findData = datas.find((data) => data.id === id);
-  if (findData) {
-    const newData: DataIter[] = [];
-    datas.map((data) => {
-      if (data.id !== id) {
-        newData.push(data);
-      }
+export const addNode = async (d: DataIter) => {
+  try {
+    await db.collection("nodes").doc(d.id).set({
+      d0: d.d0,
+      d1: d.d1,
+      d2: d.d2,
+      d3: d.d3,
     });
-
-    writeData(newData);
+    console.log("User added with ID:", d.id);
     return true;
-  } else return false;
-}
+  } catch (error) {
+    console.error("Error adding user:", error);
+    return false;
+  }
+};
+
+export const updateNode = async (d: DataIter) => {
+  try {
+    await db.collection("users").doc(d.id).update({
+      d0: d.d0,
+      d1: d.d1,
+      d2: d.d2,
+      d3: d.d3,
+    });
+    console.log("User updated with ID:", d.id);
+    return true;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return false;
+  }
+};
+
+export const deleteNode = async (nodeID: string) => {
+  try {
+    await db.collection("users").doc(nodeID).delete();
+    console.log("User deleted with ID:", nodeID);
+    return true;
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return false;
+  }
+};
