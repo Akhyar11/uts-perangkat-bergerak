@@ -53,8 +53,8 @@ export default function Dashboard() {
   return (
     <div className="p-10">
       <p>Token anda : {token}</p>
-      <div className="flex">
-        <div className="flex gap-4">
+      <div className="flex justify-center">
+        <div className="flex gap-4 flex-col md:flex-row w-full">
           {nodes ? (
             <>
               <PinOnOff
@@ -106,14 +106,17 @@ const PinOnOff = ({
     document.documentElement.classList.toggle("dark");
   };
   return (
-    <div className="mt-4 p-4 ring ring-slate-900 rounded-md">
+    <div className="mt-4 sm:w-full p-4 ring ring-slate-900 rounded-md">
       <span>{label}</span>
       <div
         className={`rounded-lg ring ring-slate-900 mt-4 ${
           darkMode ? "bg-blue-500 text-white" : "bg-white text-black"
         } transition-all duration-300`}
       >
-        <button onClick={toggleDarkMode} className="px-4 py-2 rounded-lg">
+        <button
+          onClick={toggleDarkMode}
+          className="px-4 w-full py-2 rounded-lg"
+        >
           {darkMode ? "Switch to Off Mode" : "Switch to On Mode"}
         </button>
       </div>
