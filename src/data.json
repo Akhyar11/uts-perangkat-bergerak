@@ -1,4 +1,4 @@
 {
   "apiLink": "https://uts-perangkat-bergerak.vercel.app/api/NodeMCU",
-  "localAPI": "http://localhost:3000"
+  "localAPI": "https://uts-perangkat-bergerak.vercel.app"
 }
