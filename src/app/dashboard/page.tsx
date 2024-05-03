@@ -1,125 +1,78 @@
 "use client";
 
-import cekToken from "@/utils/getToken";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import data from "@/data.json";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import data from "@/data.json";
+import cekLogin from "@/utils/isLogin";
+import { IsMsg } from "@/utils/isMsg";
 import { DataIter } from "@/utils/controllerDatas";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-  const [token, setToken] = useState("");
-  const [nodes, setNodes] = useState<DataIter>();
+  const [nodes, setNodes] = useState<DataIter[]>([]);
+  const [msg, setMsg] = useState<string>("");
   const router = useRouter();
 
   const getNodes = async () => {
-    if (token !== "") {
-      const resolve = await axios.get(data.apiLink + "/" + token);
-      const resolveData: DataIter = {
-        id: token,
-        ...resolve.data.data,
-      };
-      setNodes(resolveData);
-    }
-  };
+    try {
+      const validLogin = cekLogin();
+      if (validLogin) {
+        const response = await axios.get(
+          data.localAPI + "/api/NodeMCU/getByUserId/" + validLogin
+        );
 
-  const setPin = async (pin: string) => {
-    if (nodes) {
-      const newNodes = {
-        d0: nodes.d0,
-        d1: nodes.d1,
-        d2: nodes.d2,
-        d3: nodes.d3,
-      };
+        const dataFromDB = response.data.data;
 
-      if (pin === "d0") newNodes.d0.condition = !nodes.d0.condition;
-      if (pin === "d1") newNodes.d1.condition = !nodes.d1.condition;
-      if (pin === "d2") newNodes.d2.condition = !nodes.d2.condition;
-      if (pin === "d3") newNodes.d3.condition = !nodes.d3.condition;
-
-      await axios.post(data.apiLink + "/" + token, newNodes);
-      await getNodes();
+        if (dataFromDB) {
+          setNodes(dataFromDB);
+          setMsg("");
+        } else {
+          setMsg(response.data.msg);
+        }
+      } else {
+        router.push("/login");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
   useEffect(() => {
-    const token = cekToken();
-    if (!token) router.push("/");
-    else {
-      setToken(token);
-      getNodes();
-    }
-  });
+    getNodes();
+  }, []);
   return (
-    <div className="p-10">
-      <p>Token anda : {token}</p>
-      <div className="flex justify-center">
-        <div className="flex gap-4 flex-col md:flex-row w-full">
-          {nodes ? (
-            <>
-              <PinOnOff
-                label="PIN D0"
-                condition={nodes.d0.condition}
-                func={() => setPin("d0")}
-              />
-              <PinOnOff
-                label="PIN D1"
-                condition={nodes.d1.condition}
-                func={() => setPin("d1")}
-              />
-              <PinOnOff
-                label="PIN D2"
-                condition={nodes.d2.condition}
-                func={() => setPin("d2")}
-              />
-              <PinOnOff
-                label="PIN D3"
-                condition={nodes.d3.condition}
-                func={() => setPin("d3")}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
+    <div className="p-4 w-full h-screen relative">
+      <IsMsg msg={msg} />
+      <div className="p-4 w-full flex gap-4">
+        {nodes.map((node) => {
+          return (
+            <CardOfNodes name={node.name} nodeID={node.id} key={node.id} />
+          );
+        })}
       </div>
+      <button
+        onClick={() => {
+          router.push("/addNode");
+        }}
+        className="text-3xl absolute bottom-10 right-10 w-16 h-16 text-white hover:bg-green-600 transition-all duration-300 bg-green-400 font-semibold p-3 rounded-full"
+      >
+        +
+      </button>
     </div>
   );
 }
 
-const PinOnOff = ({
-  func,
-  label,
-  condition,
-}: {
-  func?: Function;
-  label?: string;
-  condition?: boolean;
-}) => {
-  const [darkMode, setDarkMode] = useState(condition);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (func) {
-      func();
-    }
-    document.documentElement.classList.toggle("dark");
-  };
+function CardOfNodes({ name, nodeID }: { name: string; nodeID: string }) {
+  const router = useRouter();
   return (
-    <div className="mt-4 sm:w-full p-4 ring ring-slate-900 rounded-md">
-      <span>{label}</span>
-      <div
-        className={`rounded-lg ring ring-slate-900 mt-4 ${
-          darkMode ? "bg-blue-500 text-white" : "bg-white text-black"
-        } transition-all duration-300`}
-      >
-        <button
-          onClick={toggleDarkMode}
-          className="px-4 w-full py-2 rounded-lg"
-        >
-          {darkMode ? "Switch to Off Mode" : "Switch to On Mode"}
-        </button>
-      </div>
+    <div
+      onClick={() => {
+        router.push("/controllerNode/" + nodeID);
+      }}
+      className="p-8 hover:cursor-pointer border ring ring-slate-900 rounded-lg flex flex-col gap-2"
+    >
+      <span className="text-2xl font-semibold">{name}</span>
+      <span>{nodeID}</span>
     </div>
   );
-};
+}

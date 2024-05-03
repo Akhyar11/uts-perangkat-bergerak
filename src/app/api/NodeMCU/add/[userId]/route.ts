@@ -12,14 +12,24 @@ function generateRandomID() {
   return result;
 }
 
-export async function POST() {
+export async function POST(req: Request, content: any) {
+  const { params } = content;
+  const body = await req.json();
   const id = generateRandomID();
   const pin: PinType = { label: "lamp", condition: false };
-  const data: DataIter = { id, d0: pin, d1: pin, d2: pin, d3: pin };
+  const data: DataIter = {
+    id,
+    userId: params.userId,
+    name: body.name,
+    d0: pin,
+    d1: pin,
+    d2: pin,
+    d3: pin,
+  };
   const valid = await addNode(data);
   if (valid) {
     return NextResponse.json({
-      msg: "berhasil membuat data dengan id => " + id,
+      msg: "berhasil membuat node baru",
     });
   } else {
     return NextResponse.json({ msg: "gagal membuat data" });

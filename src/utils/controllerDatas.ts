@@ -2,6 +2,8 @@ import { db } from "./firebase";
 
 export interface DataIter {
   id: string;
+  userId: string;
+  name: string;
   d0: PinType;
   d1: PinType;
   d2: PinType;
@@ -41,9 +43,31 @@ export async function getNode(nodeID: string) {
   }
 }
 
+export async function getNodeByUserId(userId: string) {
+  try {
+    const doc = await db
+      .collection("nodes")
+      .where("userId", "==", userId)
+      .get();
+    if (!doc.empty) {
+      const data = doc.docs.map((d) => {
+        return { id: d.id, ...d.data() };
+      });
+      return data;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
 export const addNode = async (d: DataIter) => {
   try {
     await db.collection("nodes").doc(d.id).set({
+      userId: d.userId,
+      name: d.name,
       d0: d.d0,
       d1: d.d1,
       d2: d.d2,
@@ -60,6 +84,8 @@ export const addNode = async (d: DataIter) => {
 export const updateNode = async (d: DataIter) => {
   try {
     await db.collection("nodes").doc(d.id).update({
+      userId: d.userId,
+      name: d.name,
       d0: d.d0,
       d1: d.d1,
       d2: d.d2,
