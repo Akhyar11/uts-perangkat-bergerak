@@ -89,7 +89,10 @@ export default function Login() {
             Login
           </button>
         </form>
-        <button className="bg-green-400 hover:bg-green-600 transition-all duration-300 py-2 px-4 rounded-lg text-white font-semibold mt-4">
+        <button
+          onClick={() => router.push("/register")}
+          className="bg-green-400 hover:bg-green-600 transition-all duration-300 py-2 px-4 rounded-lg text-white font-semibold mt-4"
+        >
           Register
         </button>
       </div>
