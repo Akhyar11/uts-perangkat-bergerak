@@ -71,7 +71,10 @@ export default function Login() {
             Register
           </button>
         </form>
-        <button className="bg-green-400 py-2 px-4 rounded-lg text-white font-semibold mt-4">
+        <button
+          onClick={() => router.push("/login")}
+          className="bg-green-400 py-2 px-4 rounded-lg text-white font-semibold mt-4"
+        >
           Login
         </button>
       </div>
