@@ -25,6 +25,10 @@ export async function POST(req: Request, content: any) {
     d1: pin,
     d2: pin,
     d3: pin,
+    sensor: {
+      name: "nn",
+      value: false,
+    },
   };
   const valid = await addNode(data);
   if (valid) {
