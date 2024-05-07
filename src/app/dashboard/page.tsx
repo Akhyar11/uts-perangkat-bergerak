@@ -25,6 +25,8 @@ export default function Dashboard() {
 
         const dataFromDB = response.data.data;
 
+        console.log(dataFromDB);
+
         if (dataFromDB) {
           setNodes(dataFromDB);
           setMsg("");

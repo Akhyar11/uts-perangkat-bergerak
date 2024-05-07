@@ -57,7 +57,7 @@ export async function getNodeByUserId(userId: string) {
       const data: DataIter[] = doc.docs.map((payload) => {
         const d = payload.data();
         return {
-          id: d.id,
+          id: payload.id,
           d0: d.d0,
           d1: d.d1,
           d2: d.d2,
