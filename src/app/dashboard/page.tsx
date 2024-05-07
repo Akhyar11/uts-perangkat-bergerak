@@ -7,10 +7,12 @@ import cekLogin from "@/utils/isLogin";
 import { IsMsg } from "@/utils/isMsg";
 import { DataIter } from "@/utils/controllerDatas";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Dashboard() {
   const [nodes, setNodes] = useState<DataIter[]>([]);
   const [msg, setMsg] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   const router = useRouter();
 
   const getNodes = async () => {
@@ -39,9 +41,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     getNodes();
+    const validId = Cookies.get("userId");
+    if (validId) setUserId(validId);
   }, []);
   return (
     <div className="p-4 w-full h-screen relative">
+      <span>User Id Anda: {userId}</span>
       <IsMsg msg={msg} />
       <div className="p-4 w-full flex gap-4">
         {nodes.map((node) => {
