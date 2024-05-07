@@ -11,5 +11,5 @@ export async function GET(_: Request, content: any) {
     });
     return NextResponse.json({ data, fireSensor });
   } else
-    return NextResponse.json({ msg: "tidak ada node dengan user terkait" });
+    return NextResponse.json({ msg: "tidak ada node dengan user terkait " });
 }
