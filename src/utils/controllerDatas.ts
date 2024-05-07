@@ -8,6 +8,10 @@ export interface DataIter {
   d1: PinType;
   d2: PinType;
   d3: PinType;
+  sensor: {
+    name: string;
+    value: boolean;
+  };
 }
 
 export type PinType = {
@@ -50,8 +54,18 @@ export async function getNodeByUserId(userId: string) {
       .where("userId", "==", userId)
       .get();
     if (!doc.empty) {
-      const data = doc.docs.map((d) => {
-        return { id: d.id, ...d.data() };
+      const data: DataIter[] = doc.docs.map((payload) => {
+        const d = payload.data();
+        return {
+          id: d.id,
+          d0: d.d0,
+          d1: d.d1,
+          d2: d.d2,
+          d3: d.d3,
+          name: d.name,
+          sensor: d.sensor,
+          userId: d.userId,
+        };
       });
       return data;
     } else {
@@ -65,14 +79,21 @@ export async function getNodeByUserId(userId: string) {
 
 export const addNode = async (d: DataIter) => {
   try {
-    await db.collection("nodes").doc(d.id).set({
-      userId: d.userId,
-      name: d.name,
-      d0: d.d0,
-      d1: d.d1,
-      d2: d.d2,
-      d3: d.d3,
-    });
+    await db
+      .collection("nodes")
+      .doc(d.id)
+      .set({
+        userId: d.userId,
+        name: d.name,
+        d0: d.d0,
+        d1: d.d1,
+        d2: d.d2,
+        d3: d.d3,
+        sensor: {
+          name: "nn",
+          value: false,
+        },
+      });
     console.log("User added with ID:", d.id);
     return true;
   } catch (error) {
@@ -90,6 +111,7 @@ export const updateNode = async (d: DataIter) => {
       d1: d.d1,
       d2: d.d2,
       d3: d.d3,
+      sensor: d.sensor,
     });
     console.log("User updated with ID:", d.id);
     return true;
