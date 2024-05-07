@@ -34,6 +34,7 @@ export default function ControllerNode() {
         d1: nodes.d1,
         d2: nodes.d2,
         d3: nodes.d3,
+        sensor: nodes.sensor,
       };
 
       if (pin === "d0") newNodes.d0.condition = !nodes.d0.condition;
