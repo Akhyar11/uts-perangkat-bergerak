@@ -9,7 +9,7 @@ export async function GET(req: Request, content: any) {
     for (let d of data) {
       if (d.sensor.value === true) fireSensor = true;
     }
-    return NextResponse.json({ data });
+    return NextResponse.json({ fireSensor });
   } else {
     return NextResponse.json({ msg: "tidak ada node dengan user terkait" });
   }
