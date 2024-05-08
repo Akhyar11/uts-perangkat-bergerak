@@ -25,8 +25,6 @@ export default function Dashboard() {
 
         const dataFromDB = response.data.data;
 
-        console.log(dataFromDB);
-
         if (dataFromDB) {
           setNodes(dataFromDB);
           setMsg("");
@@ -53,7 +51,12 @@ export default function Dashboard() {
       <div className="p-4 w-full flex gap-4">
         {nodes.map((node) => {
           return (
-            <CardOfNodes name={node.name} nodeID={node.id} key={node.id} />
+            <CardOfNodes
+              name={node.name}
+              danger={node.sensor.value}
+              nodeID={node.id}
+              key={node.id}
+            />
           );
         })}
       </div>
@@ -69,14 +72,24 @@ export default function Dashboard() {
   );
 }
 
-function CardOfNodes({ name, nodeID }: { name: string; nodeID: string }) {
+function CardOfNodes({
+  name,
+  nodeID,
+  danger,
+}: {
+  name: string;
+  nodeID: string;
+  danger: boolean;
+}) {
   const router = useRouter();
   return (
     <div
       onClick={() => {
         router.push("/controllerNode/" + nodeID);
       }}
-      className="p-8 hover:cursor-pointer border ring ring-slate-900 rounded-lg flex flex-col gap-2"
+      className={`p-8 hover:cursor-pointer border ring ring-slate-900 rounded-lg flex flex-col gap-2 ${
+        danger ? "bg-red-600 text-white" : ""
+      }`}
     >
       <span className="text-2xl font-semibold">{name}</span>
       <span>{nodeID}</span>
