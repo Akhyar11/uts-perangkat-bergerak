@@ -1,7 +1,7 @@
 import { getNodeByUserId } from "@/utils/controllerDatas";
 import { NextResponse } from "next/server";
 
-export async function GET(_: Request, content: any) {
+export async function GET(req: Request, content: any) {
   const { params } = content;
   const data = await getNodeByUserId(params.userId);
   if (data) {
@@ -9,9 +9,8 @@ export async function GET(_: Request, content: any) {
     for (let d of data) {
       if (d.sensor.value === true) fireSensor = true;
     }
-
-    console.log(data);
     return NextResponse.json({ fireSensor });
-  } else
+  } else {
     return NextResponse.json({ msg: "tidak ada node dengan user terkait" });
+  }
 }
