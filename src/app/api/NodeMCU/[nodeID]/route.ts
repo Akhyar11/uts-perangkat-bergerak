@@ -1,11 +1,26 @@
-import { deleteNode, getNode, updateNode } from "@/utils/controllerDatas";
+import {
+  deleteNode,
+  getNode,
+  getNodeByUserId,
+  updateNode,
+} from "@/utils/controllerDatas";
 import { NextResponse } from "next/server";
 
 export async function GET(_: Request, content: any) {
   const { params } = content;
   const data = await getNode(params.nodeID);
-  if (data) return NextResponse.json({ data });
-  else return NextResponse.json({ msg: "tidak ada node dengan id tersebut" });
+  if (data) {
+    const nodes = await getNodeByUserId(data.userId);
+
+    let fireSensor = false;
+    if (nodes) {
+      for (let d of nodes) {
+        if (d.sensor.value === true) fireSensor = true;
+      }
+    }
+
+    return NextResponse.json({ data, fireSensor });
+  } else return NextResponse.json({ msg: "tidak ada node dengan id tersebut" });
 }
 
 export async function POST(req: Request, content: any) {
